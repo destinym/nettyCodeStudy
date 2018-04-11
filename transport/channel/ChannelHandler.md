@@ -66,3 +66,36 @@ deregister
 #ChannelOutboundHandlerAdapter
 简单实现
 
+#ChannelInitializer
+特殊的ChannelInboundHandler，提供简单方式初始化channel,当channel注册到Eventloop的时候。
+todo. 文档这里有错误 最新代码里面的是正确的。
+
+我们通常会继承这个类来初始化channel
+
+```
+    public MyChannelInit extends ChannelInitializer{
+     
+       public initChannel(Channel channel){
+           channel.pipeline.addLast("myHandler",  new MyHandler);
+       }
+       
+    }
+    
+```
+
+我们看下整体的调用流程 
+
+```
+    1 bootstrap.childHandler(new MyChannelInit());
+      它会将MyChannelInit 加入到bootstarp中。
+    2 bootstrap启动后会调用channelRegisterd()
+      我们这里只有一个hander，所以它实际上回调ChannelInitializer中的channelRegister.
+    3 让我们来看channelRegistered中的方法  
+      实际上它会去调用私有的 initChannel(ChannelHandlerContext ctx)这个方法，注意不要和上面的方法混淆了。
+      首先，有个initMap，判断是否第一次进入。如果不是，返回false.
+      第一次进入，首先去调用initChannel(Channel c)这个方法，就是用户自己定义的加入哪些handler。
+      最后的时候，会删除remove(ctx)
+       
+       
+      
+```
