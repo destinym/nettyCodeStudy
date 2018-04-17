@@ -1,3 +1,28 @@
+#packeinfo
+byte buffer是最基本的数据结构，代表底层二进制和文本信息。netty使用自己的api去代替ByteBuffer.比起Bytebuffer有显著的优点。他设计就是为了解决ByteBuffer的问题。  
+* 你可以定义你的buffer类型
+* 零拷贝，被composite buffer type实现
+* 提供动态buffer类型， 例如String buffer
+* 你不需要调用flip()
+* 比ByteBuffer快
+
+##可扩展性
+丰富的优化快速协议实现。快速查找，易于扩展。
+## 零拷贝
+为了提高网络程序的性能，你需要降低拷贝操作的数目。例如你需要裁剪组合一些buffers去创建一个新的消息。Netty就会提供 composite buffer，让你能够创建一个新的buffer，而不用拷贝数据。  
+下面的例子，你可以在模块化的程序中，分别创建header和body，并且随后把他们组合起来。
+
+```
+ +--------+----------+
+ | header |   body   |
+ +--------+----------+
+```
+
+如果是使用BuyteBuffer,你要做的就是新建一个大的buffer，然后把这两个拷贝到新的buffer里面，或者是你可以在NIO中进行一个收集写操作(gathering writing operation),但是它限制你去表示这是一个bytebuffers数组的组合buffer，而不是一个单独buffer.这样会使得状态的管理变得很复杂，和不够抽象。而且，你也无法从NIO信道中读写。
+
+
+
+
 #ByteBuf
 一个随机和顺序的获取多个字符集合（可以是0个）。
 
