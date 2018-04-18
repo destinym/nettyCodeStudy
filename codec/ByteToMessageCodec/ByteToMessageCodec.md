@@ -1,0 +1,4 @@
+#ByteToMessageCodec
+这个类是认为是ByteToMessageDecoder和MessageToByteEncoder综合。  
+ByteToMessageCodec的子类是一个不能用@Sharable修饰的。
+
